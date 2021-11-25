@@ -37,14 +37,7 @@ class Sudoku:
 
     def value_at(self, x: int, y: int) -> int:
         """Returns the value at x,y."""
-        value = -1
-
-        for i in range(9):
-            for j in range(9):
-                if i == x and j == y:
-                    row = self._grid[y]
-                    value = int(row[x])
-
+        value = int(self._grid[y][x])
         return value
 
     def options_at(self, x: int, y: int) -> Iterable[int]:
@@ -77,21 +70,17 @@ class Sudoku:
         If there is no empty spot, returns (-1,-1)
         """
         next_x, next_y = -1, -1
-
+        
         for y in range(9):
-            for x in range(9):
-                if self.value_at(x, y) == 0 and next_x == -1 and next_y == -1:
-                    next_x, next_y = x, y
+            if 0 in self.row_values(y) and next_x == -1 and next_y == -1:
+                next_x = list(map(int, list(self._grid[y]))).index(0)
+                next_y = y
 
         return next_x, next_y
 
     def row_values(self, i: int) -> Iterable[int]:
         """Returns all values at i-th row."""
-        values = []
-
-        for j in range(9):
-            values.append(self.value_at(j, i))
-
+        values = list(map(int, list(self._grid[i])))
         return values
 
     def column_values(self, i: int) -> Iterable[int]:
@@ -99,8 +88,8 @@ class Sudoku:
         values = []
 
         for j in range(9):
-            values.append(self.value_at(i, j))
-
+            values.append(int(self._grid[j][i]))
+        
         return values
 
     def block_values(self, i: int) -> Iterable[int]:
@@ -115,10 +104,10 @@ class Sudoku:
 
         x_start = (i % 3) * 3
         y_start = (i // 3) * 3
-
+        
         for x in range(x_start, x_start + 3):
             for y in range(y_start, y_start + 3):
-                values.append(self.value_at(x, y))
+                values.append(int(self._grid[y][x]))
 
         return values
 
